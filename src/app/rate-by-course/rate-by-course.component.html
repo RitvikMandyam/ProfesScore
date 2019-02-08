@@ -17,44 +17,49 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <table mat-table [dataSource]="profsDataSource" class="mat-elevation-z8" matSort [ngClass]="{hidden: shouldShowLoader || !shouldShowTable}" >
-    <ng-container matColumnDef="teacherfullname_s">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
-      <mat-cell *matCellDef="let prof"> {{prof.teacherfullname_s}} </mat-cell>
-    </ng-container>
+  <div class="table-container mat-elevation-z8" [ngClass]="{hidden: shouldShowLoader || !shouldShowTable}">
+    <mat-table [dataSource]="profsDataSource" matSort>
+      <ng-container matColumnDef="teacherfullname_s">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+        <mat-cell *matCellDef="let prof"> {{prof.teacherfullname_s}} </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="teacherdepartment_s">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Department </mat-header-cell>
-      <mat-cell *matCellDef="let prof"> {{prof.teacherdepartment_s}} </mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="teacherdepartment_s">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Department </mat-header-cell>
+        <mat-cell *matCellDef="let prof"> {{prof.teacherdepartment_s}} </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="averageratingscore_rf">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Rating </mat-header-cell>
-      <mat-cell *matCellDef="let prof"> {{prof.averageratingscore_rf}} </mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="averageratingscore_rf">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Rating </mat-header-cell>
+        <mat-cell *matCellDef="let prof"> {{prof.averageratingscore_rf}} </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="averageeasyscore_rf">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Ease </mat-header-cell>
-      <mat-cell *matCellDef="let prof"> {{prof.averageeasyscore_rf}} </mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="averageeasyscore_rf">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Ease </mat-header-cell>
+        <mat-cell *matCellDef="let prof"> {{prof.averageeasyscore_rf}} </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="averageclarityscore_rf">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Clarity </mat-header-cell>
-      <mat-cell *matCellDef="let prof"> {{prof.averageclarityscore_rf}} </mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="averageclarityscore_rf">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Clarity </mat-header-cell>
+        <mat-cell *matCellDef="let prof"> {{prof.averageclarityscore_rf}} </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="averagehelpfulscore_rf">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Helpfulness </mat-header-cell>
-      <mat-cell *matCellDef="let prof"> {{prof.averagehelpfulscore_rf}} </mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="averagehelpfulscore_rf">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Helpfulness </mat-header-cell>
+        <mat-cell *matCellDef="let prof"> {{prof.averagehelpfulscore_rf}} </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="tags">
-      <mat-header-cell *matHeaderCellDef> Tags </mat-header-cell>
-      <mat-cell *matCellDef="let prof"> {{prof.tags}} </mat-cell>
-    </ng-container>
+      <ng-container matColumnDef="tags">
+        <mat-header-cell *matHeaderCellDef> Tags </mat-header-cell>
+        <mat-cell *matCellDef="let prof"> {{prof.tags}} </mat-cell>
+      </ng-container>
 
-    <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: columnsToDisplay;" (click)="expandRow(row)" matRipple></mat-row>
-  </table>
+      <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columnsToDisplay" class="prof-row" (click)="expandRow(row)" matRipple></mat-row>
+      <mat-row *matRowDef="let row; columns: []; when: isExpansionDetailRow"
+               [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'"
+               style="overflow: hidden"></mat-row>
+    </mat-table>
+  </div>
   <app-loader *ngIf="shouldShowLoader"></app-loader>
 </div>

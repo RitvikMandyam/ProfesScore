@@ -18,15 +18,20 @@ import {SortingService} from '../sorting.service';
       })),
       transition('true => false', animate('275ms ease-out')),
       transition('false => true', animate('275ms ease-in'))
+    ]),  // Run when the table is inserted. Moves the controls up and then back down to make the UI feel more fluid.
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', visibility: 'visible' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ])
-  ]  // Run when the table is inserted. Moves the controls up and then back down to make the UI feel more fluid.
+  ]
 })
 export class RateByCourseComponent implements OnInit {
   // noinspection JSMismatchedCollectionQueryUpdate
-  depts: object[];  // Departments. Ignore comment above, makes my IDE handle Angular without making me twitch.
+  depts: object[] = [];  // Departments. Ignore comment above, makes my IDE handle Angular without making me twitch.
   // noinspection JSMismatchedCollectionQueryUpdate
-  classes: string[];  // Classes for a given department. See explanation of comment above.
-  private profs: object[];  // Professors who teach a given class.
+  classes: string[] = [];  // Classes for a given department. See explanation of comment above.
+  private profs: object[] = [];  // Professors who teach a given class.
   columnsToDisplay = ['teacherfullname_s', 'teacherdepartment_s', 'averageratingscore_rf', 'averageeasyscore_rf',
     'averageclarityscore_rf', 'averagehelpfulscore_rf', 'tags'];  // Angular's table uses this to decide what values I want displayed.
   profsDataSource = new MatTableDataSource(this.profs);  // Makes the table sortable.
@@ -40,7 +45,11 @@ export class RateByCourseComponent implements OnInit {
   private selectedDept: string;
   private selectedClass: string;
 
-  @ViewChild(MatSort) sort: MatSort;  // Angular seems to require this to make the table sortable, as well.
+  expandedElement: any;
+
+  // Angular seems to require this to make the table sortable, as well.
+  @ViewChild(MatSort) sort: MatSort;
+  isExpansionDetailRow = (index: number, row: object) => row.hasOwnProperty('detailRow');
 
   constructor(private dataService: BackendDataService) { }
 
@@ -72,17 +81,25 @@ export class RateByCourseComponent implements OnInit {
     this.shouldShowLoader = true;
     this.dataService.getRatings(this.selectedDept, this.selectedClass)
       .subscribe((data: object[]) => {
-        this.profs = data.filter(e => e['teacherfullname_s']);
-        this.profs.forEach((e) => {
-        if (e['tag_s_mv']) {
-          if (e['tag_s_mv'].length > 3) {
-            e['tags'] = e['tag_s_mv'].slice(0, 3).join(' - ');
+        data = data.filter(e => e['teacherfullname_s']);
+        this.profs = [];
+        data.forEach((e) => {
+          if (e['tag_s_mv']) {
+            if (e['tag_s_mv'].length > 3) {
+              e['tags'] = e['tag_s_mv'].slice(0, 3).join(' - ');
+            } else {
+              e['tags'] = e['tag_s_mv'].join(' - ');
+            }
           } else {
-            e['tags'] = e['tag_s_mv'].join(' - ');
+            e['tags'] = null;
           }
-        } else {
-          e['tags'] = null;
-        }
+          this.profs.push(e);
+          const detailE = {};
+          for (const key of Object.keys(e)) {
+            detailE[key] = e[key];
+          }
+          detailE['detailRow'] = true;
+          this.profs.push(detailE);
         });
         this.profsDataSource = new MatTableDataSource(this.profs);  // Update the data source for the table.
         this.profsDataSource.sort = this.sort;
@@ -91,7 +108,7 @@ export class RateByCourseComponent implements OnInit {
       });
   }
 
-  expandRow(row: any) {
-    console.log(row);
+  expandRow(row: object) {
+    this.expandedElement = row;
   }
 }
