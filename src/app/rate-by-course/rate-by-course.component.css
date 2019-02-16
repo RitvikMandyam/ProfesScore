@@ -61,3 +61,34 @@ table {
 .prof-row {
   position: relative;
 }
+
+.expanded-row {
+  border-bottom-width: 0;
+}
+
+.detail-row {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+}
+
+.detail-row p {
+  flex: 1;
+  text-align: center;
+}
+
+.detail-row-wrapper {
+  visibility: hidden;
+  max-height: 0;
+}
+
+.quarter-select {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+}
+
+mat-button-toggle {
+  margin: auto 0 !important;
+}

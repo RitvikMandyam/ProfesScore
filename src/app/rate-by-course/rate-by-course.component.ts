@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {BackendDataService} from '../backend-data.service';
-import {MatSort, MatTableDataSource} from '@angular/material';
+import {MatButtonToggleGroup, MatSort, MatTableDataSource} from '@angular/material';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {SortingService} from '../sorting.service';
 
@@ -29,6 +29,7 @@ import {SortingService} from '../sorting.service';
 export class RateByCourseComponent implements OnInit {
   // noinspection JSMismatchedCollectionQueryUpdate
   depts: object[] = [];  // Departments. Ignore comment above, makes my IDE handle Angular without making me twitch.
+  quarters: object[] = [];
   // noinspection JSMismatchedCollectionQueryUpdate
   classes: string[] = [];  // Classes for a given department. See explanation of comment above.
   private profs: object[] = [];  // Professors who teach a given class.
@@ -45,11 +46,11 @@ export class RateByCourseComponent implements OnInit {
   private selectedDept: string;
   private selectedClass: string;
 
-  expandedElement: any;
+  expandedElement: object | null;
 
   // Angular seems to require this to make the table sortable, as well.
   @ViewChild(MatSort) sort: MatSort;
-  isExpansionDetailRow = (index: number, row: object) => row.hasOwnProperty('detailRow');
+  @ViewChild(MatButtonToggleGroup) quarterToggle: MatButtonToggleGroup;
 
   constructor(private dataService: BackendDataService) { }
 
@@ -57,10 +58,17 @@ export class RateByCourseComponent implements OnInit {
     // When page is loaded, get list of departments from backend. Enable the departments dropdown once done.
     this.dataService.getDepartments()
       .subscribe((data: object[]) => {
-        this.depts = data.sort();
+        this.depts = data['depts'].sort();
+        this.quarters = data['quarters'];
         this.shouldDisableDepts = false;
     });
     this.profsDataSource.sort = this.sort;  // Again, making the table sortable. Why does it need three lines of code? Ask Google.
+  }
+
+  onQuarterChanged(value) {
+    this.shouldDisableClasses = true;
+    this.shouldShowTable = false;
+    console.log(value);
   }
 
   onDeptSelected(dept) {
@@ -68,7 +76,7 @@ export class RateByCourseComponent implements OnInit {
     this.selectedDept = dept;
     this.shouldDisableClasses = true;
     this.shouldShowTable = false;
-    this.dataService.getClasses(this.selectedDept)
+    this.dataService.getClasses(this.selectedDept, this.quarterToggle.value)
       .subscribe((data: string[]) => {
         this.classes = data.sort(SortingService.sortAlphanumeric);
         this.shouldDisableClasses = false;
@@ -79,11 +87,11 @@ export class RateByCourseComponent implements OnInit {
     // then display and populate the table.
     this.selectedClass = class_;
     this.shouldShowLoader = true;
-    this.dataService.getRatings(this.selectedDept, this.selectedClass)
+    this.dataService.getRatings(this.selectedDept, this.selectedClass, this.quarterToggle.value)
       .subscribe((data: object[]) => {
         data = data.filter(e => e['teacherfullname_s']);
-        this.profs = [];
-        data.forEach((e) => {
+        this.profs = data;
+        this.profs.forEach((e) => {
           if (e['tag_s_mv']) {
             if (e['tag_s_mv'].length > 3) {
               e['tags'] = e['tag_s_mv'].slice(0, 3).join(' - ');
@@ -93,13 +101,6 @@ export class RateByCourseComponent implements OnInit {
           } else {
             e['tags'] = null;
           }
-          this.profs.push(e);
-          const detailE = {};
-          for (const key of Object.keys(e)) {
-            detailE[key] = e[key];
-          }
-          detailE['detailRow'] = true;
-          this.profs.push(detailE);
         });
         this.profsDataSource = new MatTableDataSource(this.profs);  // Update the data source for the table.
         this.profsDataSource.sort = this.sort;
@@ -109,6 +110,6 @@ export class RateByCourseComponent implements OnInit {
   }
 
   expandRow(row: object) {
-    this.expandedElement = row;
+    this.expandedElement = this.expandedElement === row ? null : row;
   }
 }
