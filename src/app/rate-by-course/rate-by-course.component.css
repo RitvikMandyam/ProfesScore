@@ -19,7 +19,7 @@
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 app-logo {
@@ -28,30 +28,41 @@ app-logo {
   padding-bottom: 16px;
 }
 
+.class-selection-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  height: min-content;
+  bottom: 50%;
+  box-sizing: content-box;
+}
+
 .class-selection-controls {
-  padding-top: 16px;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
-  z-index: 5;
-  background-color: #fafafa;
-  margin-bottom: 8px;
 }
 
-.class-selection-controls * {
-  margin: auto 16px;
+.class-selection-controls input {
+  text-overflow: ellipsis;
+}
+
+.class-selection-controls mat-form-field {
+  margin: 0 8px;
 }
 
 .table-container {
-  max-height: 60%;
+  max-height: 80vh;
   width: 90%;
   overflow: auto;
+  z-index: 6;
 }
 
 table {
   width: 100%;
-  margin: 0 auto;
 }
 
 .hidden {
@@ -62,14 +73,20 @@ table {
   position: relative;
 }
 
+.prof-row:not(.expanded-row):hover {
+  background-color: #f5f5f5;
+}
+
 .expanded-row {
   border-bottom-width: 0;
 }
 
 .detail-row {
   display: flex;
-  flex-flow: row nowrap;
   width: 100%;
+  flex-flow: row wrap;
+  overflow: hidden;
+  padding: 8px;
 }
 
 .detail-row p {
@@ -78,8 +95,7 @@ table {
 }
 
 .detail-row-wrapper {
-  visibility: hidden;
-  max-height: 0;
+  min-height: 0;
 }
 
 .quarter-select {
@@ -91,4 +107,22 @@ table {
 
 mat-button-toggle {
   margin: auto 0 !important;
+}
+
+.expand-button-container {
+  width: 100%;
+  z-index: 6;
+  background-color: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-to-schedule-container {
+  width: 100%;
+  display: flex;
+}
+
+.add-to-schedule-button {
+  margin: 2px 0 2px auto;
 }

@@ -1,17 +1,18 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
+  MatAutocompleteModule, MatButtonModule,
   MatButtonToggleModule,
   MatChipsModule,
   MatIconModule,
+  MatInputModule,
   MatRippleModule,
-  MatSelectModule,
+  MatSelectModule, MatSnackBarModule,
   MatSortModule,
-  MatStepperModule,
-  MatTableModule
+  MatTableModule, MatToolbarModule, MatTooltipModule
 } from '@angular/material';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -20,19 +21,22 @@ import {RateByCourseComponent} from './rate-by-course/rate-by-course.component';
 import {LogoComponent} from './logo/logo.component';
 import {LoaderComponent} from './loader/loader.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
+import { ScheduleComponent } from './schedule/schedule.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RateByCourseComponent,
     LogoComponent,
-    LoaderComponent
+    LoaderComponent,
+    ScheduleComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     MatSelectModule,
     MatIconModule,
@@ -40,9 +44,14 @@ import {FlexLayoutModule} from '@angular/flex-layout';
     MatSortModule,
     MatChipsModule,
     MatRippleModule,
-    MatStepperModule,
+    MatAutocompleteModule,
     FlexLayoutModule,
     MatButtonToggleModule,
+    MatInputModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatToolbarModule,
+    MatSnackBarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

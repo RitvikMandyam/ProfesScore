@@ -1,0 +1,13 @@
+<div class="schedule-container mat-elevation-z3">
+  <mat-toolbar color="accent" (click)="shouldExpandClassList = true">
+    <span class="mat-subheading-1">Schedule</span>
+    <button mat-button *ngIf="shouldExpandClassList" (click)="hideClassList($event)"><span>-</span></button>
+  </mat-toolbar>
+  <div class="selected-classes-container" [@minimizeClassList]="shouldExpandClassList">
+    <div class="class-container mat-body-1" *ngFor="let class_ of scheduleClasses" [matTooltip]="class_['teacherfullname_s']">
+      <span>{{class_['class_name']}}</span>
+      <span>{{class_['times']}}</span>
+      <span>{{class_['days']}}</span>
+    </div>
+  </div>
+</div>
