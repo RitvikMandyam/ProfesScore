@@ -183,6 +183,10 @@ export class RateByCourseComponent implements OnInit {
         const current_class_time = moment.range(current_class_time_array[0], current_class_time_array[1]);
         for (const class_ of this.scheduleClasses) {
           if (!this.scheduleClasses.includes(prof)) {
+            if (class_['class_name'] === prof['class_name']) {
+              conflictingClass = class_;
+              break;
+            }
             if (class_['days_array'].some(e => prof['days_array'].includes(e))) {
               const potential_conflict_time_array = (class_['times'] as string).split('-').map(e => moment(e, 'h:mm A'));
               const potential_conflict_time = moment.range(potential_conflict_time_array[0], potential_conflict_time_array[1]);
