@@ -22,6 +22,7 @@ import {LogoComponent} from './logo/logo.component';
 import {LoaderComponent} from './loader/loader.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { ScheduleComponent } from './schedule/schedule.component';
+import { PageLoaderComponent } from './page-loader/page-loader.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { ScheduleComponent } from './schedule/schedule.component';
     LogoComponent,
     LoaderComponent,
     ScheduleComponent,
+    PageLoaderComponent,
   ],
   imports: [
     BrowserModule,

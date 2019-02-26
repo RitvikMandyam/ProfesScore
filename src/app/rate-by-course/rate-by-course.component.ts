@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {BackendDataService} from '../backend-data.service';
 import {MatSnackBar, MatSort, MatTableDataSource} from '@angular/material';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -63,6 +63,8 @@ export class RateByCourseComponent implements OnInit {
 
   // Angular seems to require this to make the table sortable, as well.
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('deptInput') deptInput: ElementRef;
+  @ViewChild('classInput') classInput: ElementRef;
 
   classForm = new FormGroup({
     quarter: new FormControl(''),
@@ -71,6 +73,8 @@ export class RateByCourseComponent implements OnInit {
   });
   scheduleClasses: object[] = [];
   shouldExpandClassList = false;
+  classListShrinkTimer = -1;
+  shouldShowPageLoader = true;
 
   constructor(private dataService: BackendDataService, private snackBar: MatSnackBar) { }
 
@@ -83,6 +87,8 @@ export class RateByCourseComponent implements OnInit {
 
         this.classForm.controls['department'].setValidators(checkIfNameMatches(this.depts));
         this.classForm.controls['department'].enable();
+        setTimeout(() => this.deptInput.nativeElement.focus(), 0);
+        this.shouldShowPageLoader = false;
 
         this.classForm.controls['quarter'].setValue(this.quarters[this.quarters.length - 1]['value']);
 
@@ -121,6 +127,7 @@ export class RateByCourseComponent implements OnInit {
   }
 
   onDeptSelected(dept) {
+    this.shouldShowPageLoader = true;
     // When a department is selected, get the classes from the backend and enable the classes dropdown.
     this.classForm.controls['class'].disable();
     this.shouldShowTable = false;
@@ -131,6 +138,8 @@ export class RateByCourseComponent implements OnInit {
         this.classForm.controls['class'].setValidators(checkIfNameMatches(this.classes, simpleValidator));
         this.classForm.controls['class'].setValue('');
         this.classForm.controls['class'].enable();
+        setTimeout(() => this.classInput.nativeElement.focus(), 0);
+        this.shouldShowPageLoader = false;
       });
   }
 
@@ -200,14 +209,14 @@ export class RateByCourseComponent implements OnInit {
         if (!conflictingClass) {
           this.scheduleClasses.push(prof);
           this.shouldExpandClassList = true;
-          setTimeout(() => this.shouldExpandClassList = false, 3000);
+          this.classListShrinkTimer = setTimeout(() => this.shouldExpandClassList = false, 1500);
         } else {
           this.snackBar.open(prof['class_name'] + ' conflicts with class ' + conflictingClass['class_name'], '', {duration: 3000});
         }
       } else {
         this.scheduleClasses.push(prof);
         this.shouldExpandClassList = true;
-        setTimeout(() => this.shouldExpandClassList = false, 3000);
+        this.classListShrinkTimer = setTimeout(() => this.shouldExpandClassList = false, 1500);
       }
       console.log(this.scheduleClasses);
     }

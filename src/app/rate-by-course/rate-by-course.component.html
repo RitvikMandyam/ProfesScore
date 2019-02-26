@@ -1,4 +1,4 @@
-<script src="rate-by-course.component.ts"></script>
+<app-page-loader *ngIf="shouldShowPageLoader"></app-page-loader>
 <div class="rate-by-course-wrapper">
   <form [formGroup]="classForm" class="class-selection-wrapper" [@moveUp]="shouldShowLoader || shouldShowTable">
     <app-logo></app-logo>
@@ -11,7 +11,7 @@
       </div>
       <div>
         <mat-form-field>
-          <input type="text" placeholder="Pick a department" matInput [matAutocomplete]="depts"
+          <input #deptInput type="text" placeholder="Pick a department" matInput [matAutocomplete]="depts"
                  formControlName="department">
           <mat-autocomplete autoActiveFirstOption #depts="matAutocomplete">
             <mat-option *ngFor="let dept of filteredDepts" [value]="dept['name']">
@@ -23,7 +23,7 @@
       <mat-icon fxHide.sm>keyboard_arrow_right</mat-icon>
       <div>
         <mat-form-field>
-          <input type="text" placeholder="Pick a class" matInput [matAutocomplete]="classes" formControlName="class">
+          <input #classInput type="text" placeholder="Pick a class" matInput [matAutocomplete]="classes" formControlName="class">
           <mat-autocomplete autoActiveFirstOption #classes="matAutocomplete">
             <mat-option *ngFor="let class_ of filteredClasses" [value]="class_">
               {{class_}}
@@ -95,5 +95,5 @@
     </mat-table>
   </div>
   <app-loader *ngIf="shouldShowLoader"></app-loader>
-  <app-schedule [scheduleClasses]="scheduleClasses" [shouldExpandClassList]="shouldExpandClassList"></app-schedule>
+  <app-schedule [scheduleClasses]="scheduleClasses" [shouldExpandClassList]="shouldExpandClassList" [classListShrinkTimer]="classListShrinkTimer"></app-schedule>
 </div>

@@ -1,13 +1,17 @@
 <div class="schedule-container mat-elevation-z3">
-  <mat-toolbar color="accent" (click)="shouldExpandClassList = true">
+  <mat-toolbar color="accent" (click)="expandClassList()">
     <span class="mat-subheading-1">Schedule</span>
     <button mat-button *ngIf="shouldExpandClassList" (click)="hideClassList($event)"><span>-</span></button>
   </mat-toolbar>
   <div class="selected-classes-container" [@minimizeClassList]="shouldExpandClassList">
-    <div class="class-container mat-body-1" *ngFor="let class_ of scheduleClasses" [matTooltip]="class_['teacherfullname_s']">
+    <div class="class-container mat-body-1" *ngFor="let class_ of scheduleClasses; let i = index" [matTooltip]="class_['teacherfullname_s']"
+         matTooltipPosition="left" (click)="showDeleteButton(i)" [@classChanged]>
       <span>{{class_['class_name']}}</span>
       <span>{{class_['times']}}</span>
       <span>{{class_['days']}}</span>
+      <div class="delete-container" [@showDeleteButton] *ngIf="deleteButtonIndex === i">
+        <button mat-button color="accent" (click)="scheduleClasses.splice(i, 1); deleteButtonIndex = -1;" class="delete-button">Delete</button>
+      </div>
     </div>
   </div>
 </div>
